@@ -1,9 +1,10 @@
 import json
-import  datetime
+import datetime
+
+
 def load_operations():
     """
     открываем файл с операциями
-    :rtype: object
     """
     with open("operations.json", "r", encoding="utf-8") as file:
         return json.load(file)
@@ -13,6 +14,9 @@ card_operations = load_operations()
 
 
 def get_date_sort():
+    """
+    :return: даты последних 5-ти операций
+    """
     date_operations = []
     for operation in card_operations:
         if "date" in operation:
@@ -22,14 +26,21 @@ def get_date_sort():
 
 
 def format_from(operation_from):
+    """
+    привидение вывода к определенному стандарту
+    :param operation_from: ввод название счета/карты
+    :return:
+    """
     if operation_from[0] == "С":
-        return operation_from[:5]+'**'+operation_from[-4:]
+        return operation_from[:5] + '**' + operation_from[-4:]
     else:
-        return operation_from[:-12]+'** **** '+operation_from[-4:]
-
+        return operation_from[:-12] + '** **** ' + operation_from[-4:]
 
 
 def print_operations():
+    """
+    :return: вывод статистики в нужном формате
+    """
     date_operations = get_date_sort()
     date_operations.reverse()
     for payment_date in date_operations:
@@ -40,5 +51,3 @@ def print_operations():
                     print(f"""{date_operation.strftime("%d.%m.%Y")} {operation["description"]}
 {format_from(operation["from"]) if 'from' in operation else ""} -> {format_from(operation["to"])}
 {operation["operationAmount"]["amount"]} {operation["operationAmount"]["currency"]["name"]}\n""")
-
-print_operations()
